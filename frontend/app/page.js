@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { loadLanguage } from "@uiw/codemirror-extensions-langs";
 import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
+import { EyeDropper } from "react-eyedrop";
 import styles from "./page.module.css";
 import DOMPurify from "dompurify";
 
@@ -38,17 +39,42 @@ div {
   const handleCssEditorChange = useCallback((val, viewUpdate) => {
     setCss(val);
   });
+  const handleHtmlChange = useCallback(() => {});
+  
+  const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" }); 
+  const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press
+  const handleChangeColor = ({ rgb, hex }) => {setPickedColor({ rgb, hex });};
 
   return (
     <div className={styles.container}>
-      <div className={styles.previewContainer}>
-        <img src="https://placehold.co/400" alt="target" />
-        <iframe
-          className={styles.preview}
-          srcDoc={generatePreviewHtml()}
-        ></iframe>{" "}
-        // todo: debounce this since it is very expensive
+      <div left>
+        <div className="eyedrop-wrapper">
+          <EyeDropper once={eyedropOnce} onChange={handleChangeColor}>
+            Eyedropper
+          </EyeDropper>
+          <div style={{ backgroundColor: pickedColor.rgb }} className="eyedrop-color" />
+          <p style={{ display: 'inline-block', position: 'relative' }}>
+            color:
+            <span
+              style={{
+                display: 'inline-block',
+                backgroundColor: pickedColor.rgb || "#FFFFFF",
+                width: '100px',
+                height: '1em',
+                verticalAlign: 'middle',
+                marginLeft: '8px'
+              }}
+            ></span>
+          </p>
+          <p style={{ color: "#FFFFFF" }}>RGB: {pickedColor.rgb}</p>
+          <p style={{ color: "#FFFFFF" }}>HEX: {pickedColor.hex}</p>
+        </div>
+        <div className={styles.previewContainer}>
+          <img src="https://placehold.co/300" alt="target" />
+          <img src="https://placehold.co/300" alt="preview" />
+        </div>
       </div>
+      
       <div className={styles.editorContainer}>
         <CodeMirror
           className={styles.htmlEditor}
