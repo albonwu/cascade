@@ -163,3 +163,22 @@ a.secondary {
     filter: invert();
   }
 }
+
+.container {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.previewContainer {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.editorContainer {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  flex-grow: 1;
+}
