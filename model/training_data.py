@@ -36,7 +36,7 @@ html_content = '''
     </style>
 </head>
 <body>
-    <div class="screenshot-div">This is a test div</div>
+    <div class="screenshot-div">This is not a test div</div>
 </body>
 </html>
 '''
@@ -49,7 +49,7 @@ driver.get(f"file://{temp_html_file_path}")
 div_element = driver.find_element(By.CLASS_NAME, "screenshot-div")
 location = div_element.location
 size = div_element.size
-driver.save_screenshot("dataset/reference1.png")  
+driver.save_screenshot("dataset/reference3.png")  
 
 # crop screenshot
 from PIL import Image
@@ -61,10 +61,10 @@ height = size['height']
 
 print(x, y, width, height)
 
-full_image = Image.open("dataset/reference1.png")
+full_image = Image.open("dataset/reference3.png")
 cropped_image = full_image.crop((0, 0, 400, 400))
-cropped_image.save("dataset/reference1_cropped.png")
+cropped_image.save("dataset/reference3_cropped.png")
 
 driver.quit()
 
-print("Screenshot saved as dataset/reference1_cropped.png")
+print("Screenshot saved as dataset/reference2_cropped.png")
