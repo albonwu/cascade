@@ -9,12 +9,6 @@ cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
 
-"""
-/submit/
-put 
-"""
-
-
 @app.route("/submit", methods=["POST"])
 @cross_origin()
 def handle_submit():

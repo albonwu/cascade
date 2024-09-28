@@ -14,12 +14,14 @@ div {
   height: 100px;
   width: 100px;
   background: #00274C;
-  color: "#FFCB05"
+  color: #FFCB05
 }`);
   const [html, _] = useState("<div>hello</div>");
 
   function generatePreviewHtml() {
-    return `<html><style>${css}</style>${DOMPurify.sanitize(html)}</html>`;
+    return `<html><style>body { margin: 0 } ${css}</style>${DOMPurify.sanitize(
+      html
+    )}</html>`;
   }
 
   async function handleSubmit() {
