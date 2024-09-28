@@ -26,5 +26,6 @@
   flex-grow: 1;
 }
 .preview {
-  height: 400px;
+  height: 300px;
+  width: 300px;
 }
