@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import styles from "@/styles/home.css";
+import styles from "../../styles/home.module.css";
 import CodeMirror from "@uiw/react-codemirror";
 import { loadLanguage } from "@uiw/codemirror-extensions-langs";
 import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
@@ -50,7 +50,7 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <div left>
+      <div>
         <div className="eyedrop-wrapper">
           <EyeDropper once={eyedropOnce} onChange={handleChangeColor}>
             Eyedropper
@@ -64,7 +64,7 @@ const Home = () => {
             <span
               style={{
                 display: "inline-block",
-                backgroundColor: pickedColor.rgb || "#FFFFFF",
+                backgroundColor: pickedColor.rgb,
                 width: "100px",
                 height: "1em",
                 verticalAlign: "middle",
@@ -72,8 +72,8 @@ const Home = () => {
               }}
             ></span>
           </p>
-          <p style={{ color: "#FFFFFF" }}>RGB: {pickedColor.rgb}</p>
-          <p style={{ color: "#FFFFFF" }}>HEX: {pickedColor.hex}</p>
+          <p>RGB: {pickedColor.rgb}</p>
+          <p>HEX: {pickedColor.hex}</p>
         </div>
         <div className={styles.previewContainer}>
           <img src="https://placehold.co/300" alt="target" />
@@ -101,9 +101,9 @@ const Home = () => {
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
           />
+          <button onClick={handleSubmit}>Submit</button>
         </div>
       </div>
-      <button onClick={handleSubmit}>Submit</button>
     </div>
   );
 };
