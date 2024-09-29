@@ -13,7 +13,7 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
-@app.rout("/index", methods=["GET"])
+@app.route("/index", methods=["GET"])
 def index():
     return "this is the cascade backend lesgoooo"
 
