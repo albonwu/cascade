@@ -44,9 +44,16 @@ button.react-eyedrop-button {
   font-size: 1.25rem;
   transition: all 500ms linear;
   cursor: pointer;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 button.react-eyedrop-button:hover {
   /* font-weight: bold; */
   background: rgba(100, 141, 71, 0.1);
   /* color: #999; */
+}
+
+button {
+  font-family: Inter, sans-serif;
 }

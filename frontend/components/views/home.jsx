@@ -69,13 +69,11 @@ const Home = () => {
 
   const handleSkip = () => {
     // tried to make the 5s cooldown reset....
-    // setIsDisabled(true); 
+    // setIsDisabled(true);
     // setTimerKey((prev) => prev + 1);
   };
 
-  function handleEnd() {
-
-  }
+  function handleEnd() {}
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
   const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press
@@ -87,42 +85,29 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <div>
-        <div className="eyedrop-wrapper">
-<<<<<<< HEAD
+        <div className={styles.colorContainer}>
           <EyeDropper
             onChange={handleChangeColor}
             cursorActive="crosshair"
             className={styles.eyedropperButton}
           >
-            Pick Color
-=======
-          <EyeDropper className={styles.customEyedropper} once={eyedropOnce} onChange={handleChangeColor}>
-            Eyedropper
->>>>>>> 352d4adc352a00c953641f97bc7f2b038c8676e4
+            pick color
           </EyeDropper>
-          <div
-            style={{ backgroundColor: pickedColor.rgb }}
-            className="eyedrop-color"
-          />
-          <p style={{ display: "inline-block", position: "relative" }}>
-            Color:
-            <span
-              style={{
-                display: "inline-block",
-                backgroundColor: pickedColor.rgb,
-                width: "100px",
-                height: "1em",
-                verticalAlign: "middle",
-                marginLeft: "8px",
-              }}
-            ></span>
-          </p>
-          <p>RGB: {pickedColor.rgb}</p>
-          <p>Hex: {pickedColor.hex}</p>
+          <div style={{ display: "flex", gap: "1rem", width: "100%" }}>
+            <div
+              className={styles.colorDrop}
+              style={{ backgroundColor: pickedColor.hex }}
+            />
+            <div>
+              <p>{pickedColor.rgb}</p>
+              <p>{pickedColor.hex}</p>
+            </div>
+          </div>
         </div>
         <div className={styles.previewContainer}>
           <img
-            src={`${BACKEND}/${sessionId}/target`}
+            // src={`${BACKEND}/${sessionId}/target`}
+            src="https://corsproxy.io/?https://placewaifu.com/image/300"
             alt="target"
             className={styles.targetImage}
           />
@@ -134,16 +119,31 @@ const Home = () => {
       </div>
 
       <div className={styles.editorContainer}>
-        <div style={{ display: 'flex', marginRight: "20px", justifyContent: 'space-between' }}>
-          <button className={styles.gameButton} 
-          style={{ width: "100px", backgroundColor:"#FDFAE0"}}
-          disabled={isDisabled} onClick={() => {handleSkip}}>
-            {isDisabled ? 'Wait...' : 'Skip'}
+        <div
+          style={{
+            display: "flex",
+            marginRight: "20px",
+            justifyContent: "space-between",
+          }}
+        >
+          <button
+            className={styles.gameButton}
+            style={{ width: "100px", backgroundColor: "#FDFAE0" }}
+            disabled={isDisabled}
+            onClick={() => {
+              handleSkip;
+            }}
+          >
+            {isDisabled ? "Wait..." : "Skip"}
           </button>
-          <button className={styles.gameButton} 
-          style={{ width: "125px", backgroundColor:"#FDFAE0"}}
-          onClick={() => {handleEnd}}>
-            {'End game'}
+          <button
+            className={styles.gameButton}
+            style={{ width: "125px", backgroundColor: "#FDFAE0" }}
+            onClick={() => {
+              handleEnd;
+            }}
+          >
+            {"End game"}
           </button>
         </div>
         <CodeMirror
@@ -162,13 +162,19 @@ const Home = () => {
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
           />
-<<<<<<< HEAD
           <button onClick={handleStart}>Start</button>
-          <button onClick={handleSubmit}>Submit</button>
-=======
-          <button style={{ marginTop:"20px", height: "2rem", width: "100px", backgroundColor:"#58C9E2"}}
-          className={styles.gameButton} onClick={handleSubmit}>Submit</button>
->>>>>>> 352d4adc352a00c953641f97bc7f2b038c8676e4
+          <button
+            style={{
+              marginTop: "20px",
+              height: "2rem",
+              width: "100px",
+              backgroundColor: "#58C9E2",
+            }}
+            className={styles.gameButton}
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
         </div>
       </div>
     </div>

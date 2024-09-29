@@ -37,10 +37,6 @@
   width: 300px;
 }
 
-.eyedrop-wrapper {
-  margin-bottom: 10px;
-}
-
 .eyedropperButton {
   background: blue;
 }
@@ -70,4 +66,21 @@
   top: 2px;
   left: 1px;
   box-shadow: none;
+}
+
+.colorContainer {
+  background: #c1b9a7;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.colorDrop {
+  /* border-radius: 100%; */
+  width: 2.5rem;
+  height: 2.5rem;
 }
