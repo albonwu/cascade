@@ -83,6 +83,7 @@ const Home = () => {
     const resJson = await res.json();
     if (resJson.status === "ok") {
       setPuzzleNum((oldPuzzleNum) => oldPuzzleNum + 1);
+      setSessionScore(resJson.score);
     } else {
       setAttemptNum((oldAttemptNum) => oldAttemptNum + 1);
     }
@@ -160,7 +161,10 @@ const Home = () => {
 
       <div className={styles.editorContainer}>
         <div className={styles.buttonContainer}>
-          <Timer onExpire={handleTimerExpire} length={3 * 60 * 1000} />
+          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+            <Timer onExpire={handleTimerExpire} length={3 * 60 * 1000} />
+            {sessionScore ? <div>{sessionScore} points this run</div> : <></>}
+          </div>
           <div>
             <b>
               puzzle {puzzleNum}

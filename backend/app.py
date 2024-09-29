@@ -178,7 +178,7 @@ def handle_submit(session_id):
     if not session_id:
         abort(403)
     session = app.db.sessions.find_one({"_id": session_id})
-    attempt_num = session["current_puzzle_attempts"]
+    score = session["score"]
     puzzle_num = session["current_puzzle"]
 
     data = request.get_json()
@@ -200,9 +200,9 @@ def handle_submit(session_id):
     print(f"{grading_res = }")
     print(f"{grading_res.text = }")
     grading_json = grading_res.json()
-    score = grading_json["similarity_score"]
+    sim_score = grading_json["similarity_score"]
 
-    if score > 0.5:  # correct
+    if sim_score > 0.5:  # correct
         puzzle_points = puzzle["points"]
         app.db.sessions.update_one(
             {"_id": session_id},
@@ -211,13 +211,12 @@ def handle_submit(session_id):
 
         thread = Thread(target=generate_puzzle, args=[session_id])
         thread.start()
-
-        return {"status": "ok"}
+        return {"status": "ok", "score": score + puzzle_points}
 
     app.db.sessions.update_one(
         {"_id": session_id}, {"$inc": {"current_puzzle_attempts": 1}}
     )
-    return {"status": "error"}
+    return {"status": "error", "score": score}
 
 
 # @app.route("/generate", methods=["GET"])
