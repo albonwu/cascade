@@ -94,6 +94,7 @@ def start_session():
             "num_puzzles": 0,
             "current_puzzle": 0,
             "current_puzzle_attempts": 0,
+            "skipped_puzzles": [],
         }
     )
     res = make_response(str(session_id))
@@ -117,6 +118,48 @@ def serve_image(session_id, puzzle_num):
     return response
 
 
+@app.route("/<session_id>/skip", methods=["POST"])
+def skip_puzzle(session_id):
+    puzzle_num = app.db.sessions.find_one({"_id": session_id})[
+        "current_puzzle"
+    ]
+    app.db.sessions.update_one(
+        {"_id": session_id},
+        {
+            "$push": {"skipped_puzzles": puzzle_num},
+            "$inc": {"current_puzzle": 1},
+        },
+    )
+    thread = Thread(target=generate_puzzle, args=[session_id])
+    thread.start()
+    print(f"{puzzle_num + 1 = }")
+    return str(puzzle_num + 1)
+
+
+@app.route("/<session_id>/skipped")
+def get_skipped(session_id):
+    skipped_numbers = app.db.sessions.find_one({"_id": session_id})[
+        "skipped_puzzles"
+    ]
+
+    res = [f"{session_id}.{num}" for num in skipped_numbers]
+    return res
+
+
+@app.route("/image/<name>")
+def get_image(name):
+    file = app.db.images.find_one({"_id": name})
+    response = make_response(file["file"])
+    response.headers.set("Content-Type", "image/png")
+    return response
+
+
+@app.route("/solution/<name>")
+def get_solution(name):
+    solution = app.db.codes.find_one({"_id": name})["file"]
+    return solution
+
+
 @app.route("/<session_id>/submit", methods=["POST"])
 def handle_submit(session_id):
     if not session_id:
@@ -130,9 +173,24 @@ def handle_submit(session_id):
     attempt_image = render_html(html)
     attempt_name = f"{session_id}.{puzzle_num}.{attempt_num}"
     app.db.images.insert_one({"_id": attempt_name, "file": attempt_image})
-    # todo: compare image to correct
+    target_file = app.db.images.find_one(
+        {"_id": f"{session_id}.{puzzle_num}"}
+    )["file"]
 
-    if True:  # correct
+    grading_res = requests.post(
+        "https://3265-146-152-233-45.ngrok-free.app/predict",
+        files={
+            "image1": ("target", target_file),
+            "image2": ("attempt", attempt_image),
+        },
+    )
+
+    print(f"{grading_res = }")
+    print(f"{grading_res.text = }")
+    grading_json = grading_res.json()
+    score = grading_json["similarity_score"]
+
+    if score > 0.5:  # correct
         app.db.sessions.update_one(
             {"_id": session_id}, {"$inc": {"current_puzzle": 1}}
         )
@@ -173,11 +231,11 @@ def generate_puzzle(session_id, theme=None, component=None):
     session = app.db.sessions.find_one({"_id": session_id})
     puzzle_num = session["num_puzzles"]
 
-    image = render_html(
-        f"<style>{code_json['css']}</style>{code_json['html']}"
-    )
+    combined_html = f"<style>{code_json['css']}</style>{code_json['html']}"
+    image = render_html(combined_html)
     image_name = f"{session_id}.{puzzle_num}"
 
+    app.db.codes.insert_one({"_id": image_name, "file": combined_html})
     app.db.images.insert_one({"_id": image_name, "file": image})
     app.db.sessions.update_one(
         {"_id": session_id}, {"$inc": {"num_puzzles": 1}}
