@@ -5,6 +5,8 @@ import { loadLanguage } from "@uiw/codemirror-extensions-langs";
 import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import { EyeDropper } from "react-eyedrop";
 import DOMPurify from "dompurify";
+import { useDispatch } from "react-redux";
+import { toStart } from "../../store/exampleSlice";
 
 const BACKEND = "http://127.0.0.1:5000";
 
@@ -17,6 +19,8 @@ const Home = () => {
               color: #FFCB05
             }`);
   const [html, _] = useState("<div>hello</div>");
+
+  const dispatch = useDispatch();
 
   function generatePreviewHtml() {
     return `<html><style>body { margin: 0 } ${css}</style>${DOMPurify.sanitize(
