@@ -88,17 +88,8 @@ const Home = () => {
     <div className={styles.container}>
       <div>
         <div className="eyedrop-wrapper">
-<<<<<<< HEAD
-          <EyeDropper
-            onChange={handleChangeColor}
-            cursorActive="crosshair"
-            className={styles.eyedropperButton}
-          >
-            Pick Color
-=======
           <EyeDropper className={styles.customEyedropper} once={eyedropOnce} onChange={handleChangeColor}>
             Eyedropper
->>>>>>> 352d4adc352a00c953641f97bc7f2b038c8676e4
           </EyeDropper>
           <div
             style={{ backgroundColor: pickedColor.rgb }}
@@ -162,13 +153,8 @@ const Home = () => {
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
           />
-<<<<<<< HEAD
-          <button onClick={handleStart}>Start</button>
-          <button onClick={handleSubmit}>Submit</button>
-=======
           <button style={{ marginTop:"20px", height: "2rem", width: "100px", backgroundColor:"#58C9E2"}}
           className={styles.gameButton} onClick={handleSubmit}>Submit</button>
->>>>>>> 352d4adc352a00c953641f97bc7f2b038c8676e4
         </div>
       </div>
     </div>
