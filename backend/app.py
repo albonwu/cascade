@@ -103,13 +103,13 @@ def start_session():
     return res
 
 
-@app.route("/<session_id>/target")
-def serve_image(session_id):
+@app.route("/<session_id>/target/<int:puzzle_num>")
+def serve_image(session_id, puzzle_num):
     if not session_id:
         abort(403)
-    puzzle_num = app.db.sessions.find_one({"_id": session_id})[
-        "current_puzzle"
-    ]
+    # puzzle_num = app.db.sessions.find_one({"_id": session_id})[
+    #     "current_puzzle"
+    # ]
     file = app.db.images.find_one({"_id": f"{session_id}.{puzzle_num}"})
     response = make_response(file["file"])
     response.headers.set("Content-Type", "image/png")
@@ -135,14 +135,13 @@ def handle_submit(session_id):
         app.db.sessions.update_one(
             {"_id": session_id}, {"$inc": {"current_puzzle": 1}}
         )
-        pass
-    else:
-        app.db.sessions.update_one(
-            {"_id": session_id}, {"$inc": {"current_puzzle_attempts": 1}}
-        )
+        return {"status": "ok"}
         pass
 
-    return "submitted!"
+    app.db.sessions.update_one(
+        {"_id": session_id}, {"$inc": {"current_puzzle_attempts": 1}}
+    )
+    return {"status": "error"}
 
 
 # @app.route("/generate", methods=["GET"])

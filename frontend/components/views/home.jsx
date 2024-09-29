@@ -36,6 +36,7 @@ const Home = () => {
   }
 
   const [sessionId, setSessionId] = useState();
+  const [puzzleNum, setPuzzleNum] = useState(0);
 
   async function handleStart() {
     if (loading) {
@@ -60,6 +61,12 @@ const Home = () => {
         html: generatePreviewHtml(),
       }),
     });
+    const resJson = await res.json();
+    if (resJson.status === "ok") {
+      setPuzzleNum((oldPuzzleNum) => oldPuzzleNum + 1);
+    } else {
+      // do nothing?
+    }
   }
 
   // for skip button
@@ -115,7 +122,7 @@ const Home = () => {
         </div>
         <div className={styles.previewContainer}>
           <img
-            src={`${BACKEND}/${sessionId}/target`}
+            src={`${BACKEND}/${sessionId}/target/${puzzleNum}`}
             // src="https://corsproxy.io/?https://placewaifu.com/image/300"
             alt="target"
             className={styles.targetImage}
