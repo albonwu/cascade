@@ -6,6 +6,7 @@ import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import { EyeDropper } from "react-eyedrop";
 import DOMPurify from "dompurify";
 import { useDispatch } from "react-redux";
+import { toEnd } from "../../store/exampleSlice";
 import Timer from "./Timer";
 
 const BACKEND = "http://127.0.0.1:5000";
@@ -90,7 +91,9 @@ const Home = () => {
     // setTimerKey((prev) => prev + 1);
   };
 
-  function handleEnd() {}
+  function handleEnd() {
+    dispatch(toEnd());
+  }
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
   const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press
@@ -167,9 +170,7 @@ const Home = () => {
           <div className={styles.buttonGroup}>
             <button
               className={`${styles.gameButton} ${styles.gameButtonDanger}`}
-              onClick={() => {
-                handleEnd;
-              }}
+              onClick={handleEnd}
             >
               {"End game"}
             </button>

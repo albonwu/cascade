@@ -3,6 +3,7 @@
 import styles from "./page.module.css";
 import Home from "../components/views/home";
 import Start from "../components/views/start";
+import End from "../components/views/end";
 import { useSelector } from "react-redux";
 
 export default function Root() {
@@ -11,6 +12,7 @@ export default function Root() {
     <>
       {pageState === "start" && <Start />}
       {pageState === "home" && <Home />}
+      {pageState === "end" && <End />}
     </>
   );
 }

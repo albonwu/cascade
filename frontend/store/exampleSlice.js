@@ -17,11 +17,14 @@ const exampleSlice = createSlice({
     toStart: (state) => {
       state.value = "start"
     },
+    toEnd: (state) => {
+      state.value = "end"
+    },
   },
 });
 
 // Export actions
-export const { toHome, toStart } = exampleSlice.actions;
+export const { toHome, toStart, toEnd } = exampleSlice.actions;
 
 // Export the reducer
 export default exampleSlice.reducer;

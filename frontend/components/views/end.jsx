@@ -1,12 +1,15 @@
 import "../../styles/end.css";
 import {useState} from 'react'
 import Image from 'next/image'
+import { toStart } from "../../store/exampleSlice";
+import {useDispatch} from 'react-redux'
 
 
 const End = () => {
   var score = 17; // temp value for now
 
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -14,7 +17,7 @@ const End = () => {
 
 
   function handleReturn() {
-    // do smth on click
+    dispatch(toStart())
   }
 
   return (
