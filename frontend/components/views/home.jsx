@@ -28,6 +28,15 @@ const Home = () => {
     )}</html>`;
   }
 
+  const [sessionId, setSessionId] = useState();
+
+  async function handleStart() {
+    const res = await fetch(`${BACKEND}/start_session`, { method: "POST" });
+    const newSessionId = await res.text();
+    console.log("newSessionId", newSessionId);
+    setSessionId(newSessionId);
+  }
+
   async function handleSubmit() {
     const res = await fetch(`${BACKEND}/submit`, {
       method: "POST",
@@ -44,7 +53,6 @@ const Home = () => {
   const handleCssEditorChange = useCallback((val, viewUpdate) => {
     setCss(val);
   });
-  const handleHtmlChange = useCallback(() => {});
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
   const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press
@@ -80,7 +88,7 @@ const Home = () => {
           <p>HEX: {pickedColor.hex}</p>
         </div>
         <div className={styles.previewContainer}>
-          <img src="https://placehold.co/300" alt="target" />
+          <img src={`${BACKEND}/${sessionId}/target`} alt="target" />
           <iframe
             className={styles.preview}
             srcDoc={generatePreviewHtml()}
@@ -105,6 +113,7 @@ const Home = () => {
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
           />
+          <button onClick={handleStart}>Start</button>
           <button onClick={handleSubmit}>Submit</button>
         </div>
       </div>

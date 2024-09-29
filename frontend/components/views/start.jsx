@@ -11,7 +11,7 @@ const Start = (page) => {
   return (
     <div>
       <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <Image src="/logo.png" width={300} height={300} />
+        <Image src="/logo.png" width={300} height={300} alt="logo" />
         <h1 style={{ fontWeight: "800" }}>cascade</h1>
         <p>train your CSS skills!</p>
       </div>
