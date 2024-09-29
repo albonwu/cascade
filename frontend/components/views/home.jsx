@@ -43,6 +43,7 @@ const Home = () => {
       return;
     }
     setLoading(true);
+    setPuzzleNum(0);
     const res = await fetch(`${BACKEND}/start_session`, { method: "POST" });
     const newSessionId = await res.text();
     console.log("newSessionId", newSessionId);

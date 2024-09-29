@@ -1,5 +1,6 @@
 import os
 import random
+from threading import Thread
 import time
 import json
 from uuid import uuid4
@@ -97,9 +98,9 @@ def start_session():
     )
     res = make_response(str(session_id))
     res.set_cookie("session_id", str(session_id))
-    # todo: generate two puzzles
     generate_puzzle(str(session_id))
-    generate_puzzle(str(session_id))
+    thread = Thread(target=generate_puzzle, args=[str(session_id)])
+    thread.start()
     return res
 
 
@@ -135,8 +136,11 @@ def handle_submit(session_id):
         app.db.sessions.update_one(
             {"_id": session_id}, {"$inc": {"current_puzzle": 1}}
         )
+
+        thread = Thread(target=generate_puzzle, args=[session_id])
+        thread.start()
+
         return {"status": "ok"}
-        pass
 
     app.db.sessions.update_one(
         {"_id": session_id}, {"$inc": {"current_puzzle_attempts": 1}}
