@@ -13,6 +13,11 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
+@app.rout("/index", methods=["GET"])
+def index():
+    return "this is the cascade backend lesgoooo"
+
+
 @app.route("/submit", methods=["POST"])
 def handle_submit():
     # attempt_uuid = uuid4()
