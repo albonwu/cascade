@@ -4,7 +4,6 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    height: 10rem;
   }
 .startButton {
     background-color: #58C9E2;
@@ -29,5 +28,5 @@
 h1 {
     font-weight: bold;
     font-size: 50px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }

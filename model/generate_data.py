@@ -1,4 +1,4 @@
-"""Fast heuristic for Wayne's generative approach, suitable for dataset generation."""
+"""Fast heuristic for Wayne's generative approach, suitable for large-scale dataset generation."""
 
 import random
 import re
