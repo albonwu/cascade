@@ -1,3 +1,4 @@
+import { StoreProvider } from '../store/storeProvider';
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -21,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );
