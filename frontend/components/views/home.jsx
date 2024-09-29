@@ -40,7 +40,7 @@ const Home = () => {
   const [puzzleNum, setPuzzleNum] = useState(0);
   const [attemptNum, setAttemptNum] = useState(0);
 
-  useEffect(() => {handleStart();}, []);
+  useEffect(() => {handleStart();});
 
   async function handleStart() {
     if (loading) {
@@ -169,13 +169,13 @@ const Home = () => {
           />
         </div>
         <div className={styles.buttonContainer}>
-          <button
+          {/* <button
             onClick={handleStart}
             className={styles.gameButton}
             disabled={loading}
           >
             Start
-          </button>
+          </button> */}
           <div className={styles.buttonGroup}>
             <button
               className={`${styles.gameButton} ${styles.gameButtonDanger}`}
