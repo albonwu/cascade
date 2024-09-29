@@ -38,6 +38,8 @@ const Home = () => {
 
   const [sessionId, setSessionId] = useState();
   const [puzzleNum, setPuzzleNum] = useState(0);
+  const [puzzlePoints, setPuzzlePoints] = useState();
+  const [sessionScore, setSessionScore] = useState(0);
   const [attemptNum, setAttemptNum] = useState(0);
 
   async function handleStart() {
@@ -52,6 +54,20 @@ const Home = () => {
     setSessionId(newSessionId);
     setLoading(false);
   }
+
+  async function updatePuzzlePoints() {
+    const res = await fetch(
+      `${BACKEND}/${sessionId}/target/${puzzleNum}/points`
+    );
+    const t = await res.text();
+    setPuzzlePoints(t);
+  }
+
+  useEffect(() => {
+    if (sessionId) {
+      updatePuzzlePoints();
+    }
+  }, [puzzleNum, sessionId]);
 
   async function handleSubmit() {
     const res = await fetch(`${BACKEND}/${sessionId}/submit`, {
@@ -146,7 +162,11 @@ const Home = () => {
         <div className={styles.buttonContainer}>
           <Timer onExpire={handleTimerExpire} length={3 * 60 * 1000} />
           <div>
-            <b>puzzle {puzzleNum}</b>, attempt {attemptNum}
+            <b>
+              puzzle {puzzleNum}
+              {puzzlePoints ? ` (${puzzlePoints} pts) ` : ""}
+            </b>
+            , attempt {attemptNum}
           </div>
         </div>
         <CodeMirror

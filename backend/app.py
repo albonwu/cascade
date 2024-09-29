@@ -95,6 +95,7 @@ def start_session():
             "current_puzzle": 0,
             "current_puzzle_attempts": 0,
             "skipped_puzzles": [],
+            "score": 0,
         }
     )
     res = make_response(str(session_id))
@@ -116,6 +117,12 @@ def serve_image(session_id, puzzle_num):
     response = make_response(file["file"])
     response.headers.set("Content-Type", "image/png")
     return response
+
+
+@app.route("/<session_id>/target/<int:puzzle_num>/points")
+def get_puzzle_points(session_id, puzzle_num):
+    puzzle = app.db.puzzles.find_one({"_id": f"{session_id}.{puzzle_num}"})
+    return str(puzzle["points"])
 
 
 @app.route("/<session_id>/skip", methods=["POST"])
@@ -160,6 +167,12 @@ def get_solution(name):
     return solution
 
 
+@app.route("/<session_id>/score")
+def get_score(session_id):
+    session = app.db.sessions.find_one({"_id": session_id})
+    return str(session["score"])
+
+
 @app.route("/<session_id>/submit", methods=["POST"])
 def handle_submit(session_id):
     if not session_id:
@@ -173,9 +186,8 @@ def handle_submit(session_id):
     attempt_image = render_html(html)
     # attempt_name = f"{session_id}.{puzzle_num}.{attempt_num}"
     # app.db.puzzles.insert_one({"_id": attempt_name, "file": attempt_image})
-    target_file = app.db.puzzles.find_one(
-        {"_id": f"{session_id}.{puzzle_num}"}
-    )["file"]
+    puzzle = app.db.puzzles.find_one({"_id": f"{session_id}.{puzzle_num}"})
+    target_file = puzzle["file"]
 
     grading_res = requests.post(
         "https://3265-146-152-233-45.ngrok-free.app/predict",
@@ -191,8 +203,10 @@ def handle_submit(session_id):
     score = grading_json["similarity_score"]
 
     if score > 0.5:  # correct
+        puzzle_points = puzzle["points"]
         app.db.sessions.update_one(
-            {"_id": session_id}, {"$inc": {"current_puzzle": 1}}
+            {"_id": session_id},
+            {"$inc": {"current_puzzle": 1, "score": puzzle_points}},
         )
 
         thread = Thread(target=generate_puzzle, args=[session_id])
