@@ -40,6 +40,8 @@ const Home = () => {
   const [puzzleNum, setPuzzleNum] = useState(0);
   const [attemptNum, setAttemptNum] = useState(0);
 
+  useEffect(() => {handleStart();}, []);
+
   async function handleStart() {
     if (loading) {
       return;
@@ -108,7 +110,7 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <div>
+      <div style={{ marginLeft: "auto" }}>
         <div className={styles.colorContainer}>
           <EyeDropper
             onChange={handleChangeColor}
@@ -160,7 +162,7 @@ const Home = () => {
         <div className={styles.cssEditor}>
           <CodeMirror
             value={css}
-            height="100%"
+            height="30rem"
             theme={tokyoNight}
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}

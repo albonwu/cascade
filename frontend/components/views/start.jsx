@@ -1,11 +1,15 @@
 import "../../styles/start.css";
 import Image from "next/image";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toHome } from "../../store/exampleSlice";
 
+const BACKEND = "http://127.0.0.1:5000";
+
 const Start = (page) => {
   const dispatch = useDispatch();
-  function handleStart() {
+
+  async function handleStart() {
     dispatch(toHome());
   }
   return (
@@ -17,8 +21,14 @@ const Start = (page) => {
       </div>
       <div className="container">
         <p style={{ width: "600px", marginBottom: "20px", marginTop: "30px" }}>
-          Recreate as many images as you can in three minutes. If you get stuck, use the skip button after five seconds.</p>
-        <p style={{ width: "600px", marginBottom: "20px", marginBotom: "30px" }}>All distances are multiples of 10px.</p>
+          Recreate as many images as you can in three minutes. If you get stuck,
+          use the skip button after five seconds.
+        </p>
+        <p
+          style={{ width: "600px", marginBottom: "20px", marginBotom: "30px" }}
+        >
+          All distances are multiples of 10px.
+        </p>
         <button
           style={{ position: "relative", fontWeight: "bold" }}
           className="startButton"
