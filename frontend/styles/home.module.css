@@ -34,13 +34,19 @@
     margin-bottom: 10px;
   }
 
-  /* an attempt at making the eyedropper button look nicer
-  .custom-eyedropper {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    font-size: 16px;
+  .gameButton {
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  } */
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 12px;
+    box-shadow: 2px 2px 2px black;
+  }
+  .gameButton:active {
+    top: 2px;
+    left: 1px;
+    box-shadow: none;
+  }

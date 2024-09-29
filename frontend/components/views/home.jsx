@@ -11,13 +11,13 @@ import { toStart } from "../../store/exampleSlice";
 const BACKEND = "http://127.0.0.1:5000";
 
 const Home = () => {
-  const [css, setCss] = useState(`
-            div {
-              height: 100px;
-              width: 100px;
-              background: #00274C;
-              color: #FFCB05
-            }`);
+  const [css, setCss] = useState(
+`div {
+  height: 100px;
+  width: 100px;
+  background: #00274C;
+  color: #FFCB05
+}`);
   const [html, _] = useState("<div>hello</div>");
 
   const dispatch = useDispatch();
@@ -41,10 +41,30 @@ const Home = () => {
     });
   }
 
+  // for skip button
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [timerKey, setTimerKey] = useState(0);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsDisabled(false);
+    }, 5000); // in ms
+    return () => clearTimeout(timer);
+  }, [timerKey]);
+
   const handleCssEditorChange = useCallback((val, viewUpdate) => {
     setCss(val);
   });
   const handleHtmlChange = useCallback(() => {});
+
+  const handleSkip = () => {
+    // tried to make the 5s cooldown reset....
+    // setIsDisabled(true); 
+    // setTimerKey((prev) => prev + 1);
+  };
+
+  function handleEnd() {
+
+  }
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
   const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press
@@ -56,7 +76,7 @@ const Home = () => {
     <div className={styles.container}>
       <div>
         <div className="eyedrop-wrapper">
-          <EyeDropper once={eyedropOnce} onChange={handleChangeColor}>
+          <EyeDropper className={styles.customEyedropper} once={eyedropOnce} onChange={handleChangeColor}>
             Eyedropper
           </EyeDropper>
           <div
@@ -64,7 +84,7 @@ const Home = () => {
             className="eyedrop-color"
           />
           <p style={{ display: "inline-block", position: "relative" }}>
-            color:
+            Color:
             <span
               style={{
                 display: "inline-block",
@@ -77,7 +97,7 @@ const Home = () => {
             ></span>
           </p>
           <p>RGB: {pickedColor.rgb}</p>
-          <p>HEX: {pickedColor.hex}</p>
+          <p>Hex: {pickedColor.hex}</p>
         </div>
         <div className={styles.previewContainer}>
           <img src="https://placehold.co/300" alt="target" />
@@ -89,6 +109,18 @@ const Home = () => {
       </div>
 
       <div className={styles.editorContainer}>
+        <div style={{ display: 'flex', marginRight: "20px", justifyContent: 'space-between' }}>
+          <button className={styles.gameButton} 
+          style={{ width: "100px", backgroundColor:"#FDFAE0"}}
+          disabled={isDisabled} onClick={() => {handleSkip}}>
+            {isDisabled ? 'Wait...' : 'Skip'}
+          </button>
+          <button className={styles.gameButton} 
+          style={{ width: "125px", backgroundColor:"#FDFAE0"}}
+          onClick={() => {handleEnd}}>
+            {'End game'}
+          </button>
+        </div>
         <CodeMirror
           className={styles.htmlEditor}
           value={html}
@@ -105,7 +137,8 @@ const Home = () => {
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
           />
-          <button onClick={handleSubmit}>Submit</button>
+          <button style={{ marginTop:"20px", height: "2rem", width: "100px", backgroundColor:"#58C9E2"}}
+          className={styles.gameButton} onClick={handleSubmit}>Submit</button>
         </div>
       </div>
     </div>
