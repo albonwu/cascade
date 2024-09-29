@@ -18,6 +18,7 @@ div {
   color: #FFCB05
 }`);
   const [html, _] = useState("<div>hello</div>");
+  const [puzzleId, setPuzzleId] = useState("");
 
   function generatePreviewHtml() {
     return `<html><style>body { margin: 0 } ${css}</style>${DOMPurify.sanitize(
@@ -41,7 +42,12 @@ div {
   const handleCssEditorChange = useCallback((val, viewUpdate) => {
     setCss(val);
   });
-  const handleHtmlChange = useCallback(() => {});
+
+  async function startPuzzle() {
+    const res = await fetch(`${BACKEND}/generate?theme=zen&component=clock`);
+    const newPuzzleId = await res.text();
+    setPuzzleId(newPuzzleId);
+  }
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
   const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press
@@ -77,7 +83,13 @@ div {
           <p style={{ color: "#FFFFFF" }}>HEX: {pickedColor.hex}</p>
         </div>
         <div className={styles.previewContainer}>
-          <img src="https://placehold.co/300" alt="target" />
+          <img
+            src={`${BACKEND}/static/${puzzleId}.png`}
+            width="300"
+            height="300"
+            alt="target"
+            onClick={startPuzzle}
+          />
           <iframe
             className={styles.preview}
             srcDoc={generatePreviewHtml()}
