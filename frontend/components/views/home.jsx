@@ -11,6 +11,7 @@ import Timer from "./Timer";
 const BACKEND = "http://127.0.0.1:5000";
 
 const Home = () => {
+  const [loading, setLoading] = useState(false);
   const [css, setCss] = useState(`
     body {
     background: white
@@ -37,14 +38,19 @@ const Home = () => {
   const [sessionId, setSessionId] = useState();
 
   async function handleStart() {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
     const res = await fetch(`${BACKEND}/start_session`, { method: "POST" });
     const newSessionId = await res.text();
     console.log("newSessionId", newSessionId);
     setSessionId(newSessionId);
+    setLoading(false);
   }
 
   async function handleSubmit() {
-    const res = await fetch(`${BACKEND}/submit`, {
+    const res = await fetch(`${BACKEND}/${sessionId}/submit`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // Set appropriate content type
@@ -109,8 +115,8 @@ const Home = () => {
         </div>
         <div className={styles.previewContainer}>
           <img
-            // src={`${BACKEND}/${sessionId}/target`}
-            src="https://corsproxy.io/?https://placewaifu.com/image/300"
+            src={`${BACKEND}/${sessionId}/target`}
+            // src="https://corsproxy.io/?https://placewaifu.com/image/300"
             alt="target"
             className={styles.targetImage}
           />
@@ -143,9 +149,13 @@ const Home = () => {
           />
         </div>
         <div className={styles.buttonContainer}>
-          {/* <button onClick={handleStart} className={styles.gameButton}>
+          <button
+            onClick={handleStart}
+            className={styles.gameButton}
+            disabled={loading}
+          >
             Start
-          </button> */}
+          </button>
           <div className={styles.buttonGroup}>
             <button
               className={`${styles.gameButton} ${styles.gameButtonDanger}`}
