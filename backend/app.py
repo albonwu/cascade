@@ -1,5 +1,6 @@
 import os
 import random
+from threading import Thread
 import time
 import json
 from uuid import uuid4
@@ -97,40 +98,54 @@ def start_session():
     )
     res = make_response(str(session_id))
     res.set_cookie("session_id", str(session_id))
-    # todo: generate two puzzles
     generate_puzzle(str(session_id))
+    thread = Thread(target=generate_puzzle, args=[str(session_id)])
+    thread.start()
     return res
 
 
-@app.route("/<session_id>/target")
-def serve_image(session_id):
+@app.route("/<session_id>/target/<int:puzzle_num>")
+def serve_image(session_id, puzzle_num):
     if not session_id:
         abort(403)
-    file = app.db.images.find_one({"_id": f"{session_id}.0"})
+    # puzzle_num = app.db.sessions.find_one({"_id": session_id})[
+    #     "current_puzzle"
+    # ]
+    file = app.db.images.find_one({"_id": f"{session_id}.{puzzle_num}"})
     response = make_response(file["file"])
     response.headers.set("Content-Type", "image/png")
     return response
 
 
-@app.route("/submit", methods=["POST"])
-def handle_submit():
-    session_id = request.cookies.get("session_id")
+@app.route("/<session_id>/submit", methods=["POST"])
+def handle_submit(session_id):
     if not session_id:
         abort(403)
-    attempt_num = app.db.images.find_one({"_id": session_id})[
-        "current_puzzle_attempts"
-    ]
+    session = app.db.sessions.find_one({"_id": session_id})
+    attempt_num = session["current_puzzle_attempts"]
+    puzzle_num = session["current_puzzle"]
+
     data = request.get_json()
     html = data["html"]
     attempt_image = render_html(html)
-    attempt_name = f"{session_id}.{attempt_num}"
+    attempt_name = f"{session_id}.{puzzle_num}.{attempt_num}"
     app.db.images.insert_one({"_id": attempt_name, "file": attempt_image})
+    # todo: compare image to correct
+
+    if True:  # correct
+        app.db.sessions.update_one(
+            {"_id": session_id}, {"$inc": {"current_puzzle": 1}}
+        )
+
+        thread = Thread(target=generate_puzzle, args=[session_id])
+        thread.start()
+
+        return {"status": "ok"}
+
     app.db.sessions.update_one(
         {"_id": session_id}, {"$inc": {"current_puzzle_attempts": 1}}
     )
-    # todo: compare image to correct
-
-    return "submitted!"
+    return {"status": "error"}
 
 
 # @app.route("/generate", methods=["GET"])

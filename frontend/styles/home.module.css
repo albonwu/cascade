@@ -37,10 +37,6 @@
   width: 300px;
 }
 
-.eyedrop-wrapper {
-  margin-bottom: 10px;
-}
-
 .eyedropperButton {
   background: blue;
 }
@@ -63,11 +59,60 @@
   display: inline-block;
   font-size: 16px;
   margin: 4px 2px;
-  border-radius: 12px;
-  box-shadow: 2px 2px 2px black;
+  border-radius: 0.5rem;
+  background-color: "#FDFAE0";
+  /* box-shadow: 2px 2px 2px black; */
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  min-width: 100px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+.gameButton:hover {
+  opacity: 0.8;
+}
+.gameButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+button.gameButtonPrimary {
+  color: white;
+  background: #60cae3;
+}
+button.gameButtonDanger {
+  color: white;
+  background: #e46962;
 }
 .gameButton:active {
   top: 2px;
   left: 1px;
   box-shadow: none;
+}
+
+.colorContainer {
+  background: #c1b9a7;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.colorDrop {
+  /* border-radius: 100%; */
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.buttonContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
 }
