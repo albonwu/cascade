@@ -11,18 +11,19 @@ function End() {
   const [isOpen, setIsOpen] = useState(false);
   const [score, setScore] = useState();
   const dispatch = useDispatch();
-  const sessionId = useSelector((state) => state.example.sessionId);
+  const sessionId = { payload: localStorage.getItem("sessionId") };
 
   // dropdown data
   const [skippedNames, setSkippedNames] = useState([]);
   const [skippedCode, setSkippedCode] = useState([]);
 
   async function fetchData() {
+    let data;
     try {
       const response = await fetch(`${BACKEND}/${sessionId.payload}/skipped`);
       if (!response.ok) {
       }
-      const data = await response.json(); // Assume the backend sends JSON
+      data = await response.json(); // Assume the backend sends JSON
       setSkippedNames(data); // Step 3: Update state with fetched data
     } catch (error) {
       console.error("Fetch error:", error);
@@ -59,9 +60,11 @@ function End() {
 
   return (
     <div>
+      {sessionId.payload}
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <Image src="/logo.png" width={300} height={300} />
-        <h1>your score was {score}</h1>
+        {/* <h1>your score was {score}</h1> */}
+        <h1>time's up!</h1>
       </div>
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <span
@@ -72,7 +75,7 @@ function End() {
           }}
           onClick={toggleDropdown}
         >
-          review what you missed?
+          practice again?
           <span
             style={{
               marginLeft: "8px",

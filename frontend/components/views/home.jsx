@@ -11,23 +11,26 @@ import Timer from "./Timer";
 
 const BACKEND = "http://127.0.0.1:5000";
 
-const Home = () => {
-  const [loading, setLoading] = useState(false);
-  const [css, setCss] = useState(`
-    body {
-    background: white
-    }
+const INITIALCSS = `
+body {
+  background: white
+}
 div {
   height: 100px;
   width: 100px;
   background: #00274C;
   color: #FFCB05
-            }`);
+}
+`;
+
+const Home = () => {
+  const [loading, setLoading] = useState(false);
+  const [css, setCss] = useState(INITIALCSS);
   const [html, setHtml] = useState("<div>hello</div>");
   const dispatch = useDispatch();
 
   function handleTimerExpire() {
-    dispatch(toEnd());
+    dispatch(toEnd(sessionId));
   }
 
   function generatePreviewHtml() {
@@ -41,11 +44,12 @@ div {
   const [puzzlePoints, setPuzzlePoints] = useState();
   const [sessionScore, setSessionScore] = useState(0);
   const [attemptNum, setAttemptNum] = useState(0);
-
+  const [celebrationText, setCelebrationText] = useState("");
 
   useEffect(() => {
     if (!sessionId) {
       handleStart();
+      sessionStorage.setItem("sessionId", sessionId);
     }
   }, [sessionId]);
 
@@ -91,6 +95,8 @@ div {
     if (resJson.status === "ok") {
       setPuzzleNum((oldPuzzleNum) => oldPuzzleNum + 1);
       setSessionScore(resJson.score);
+      setCelebrationText(`Passed! Your score is now ${resJson.score}`);
+      setTimeout(() => setCelebrationText(""), 3000);
     } else {
       setAttemptNum((oldAttemptNum) => oldAttemptNum + 1);
     }
@@ -206,6 +212,7 @@ div {
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
           />
+          {celebrationText}
         </div>
         <div className={styles.buttonContainer}>
           {/* <button

@@ -23,12 +23,12 @@ THEMES = [
     "grand",
 ]
 COMPONENTS = [
-    "checkbox",
+    # "checkbox",
     "circular button",
     "button",
-    "progress bar",
-    "search bar",
-    "slider",
+    "div",
+    # "progress bar",
+    # "slider",
     "switch",
 ]
 
@@ -39,6 +39,7 @@ COMPONENTS = [
 app = Flask(__name__)
 cors = CORS(app)
 BREADBOARD_URL = "https://breadboard-community.wl.r.appspot.com/boards/@ArtisticJellyfish/cascade-generator.bgl.api/run"
+GRADING_URL = "https://8949-146-152-233-45.ngrok-free.app/"
 
 
 def render_html(html: str):
@@ -183,7 +184,7 @@ def handle_submit(session_id):
     target_file = puzzle["file"]
 
     grading_res = requests.post(
-        "https://3265-146-152-233-45.ngrok-free.app/predict",
+        f"{GRADING_URL}/predict",
         files={
             "image1": ("target", target_file),
             "image2": ("attempt", attempt_image),
@@ -195,7 +196,7 @@ def handle_submit(session_id):
     grading_json = grading_res.json()
     sim_score = grading_json["similarity_score"]
 
-    if sim_score > 0.5:  # correct
+    if sim_score > 0.7:  # correct
         puzzle_points = puzzle["points"]
         app.db.sessions.update_one(
             {"_id": session_id},
