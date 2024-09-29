@@ -95,6 +95,7 @@ def start_session():
             "current_puzzle": 0,
             "current_puzzle_attempts": 0,
             "skipped_puzzles": [],
+            "score": 0,
         }
     )
     res = make_response(str(session_id))
@@ -112,10 +113,16 @@ def serve_image(session_id, puzzle_num):
     # puzzle_num = app.db.sessions.find_one({"_id": session_id})[
     #     "current_puzzle"
     # ]
-    file = app.db.images.find_one({"_id": f"{session_id}.{puzzle_num}"})
+    file = app.db.puzzles.find_one({"_id": f"{session_id}.{puzzle_num}"})
     response = make_response(file["file"])
     response.headers.set("Content-Type", "image/png")
     return response
+
+
+@app.route("/<session_id>/target/<int:puzzle_num>/points")
+def get_puzzle_points(session_id, puzzle_num):
+    puzzle = app.db.puzzles.find_one({"_id": f"{session_id}.{puzzle_num}"})
+    return str(puzzle["points"])
 
 
 @app.route("/<session_id>/skip", methods=["POST"])
@@ -148,7 +155,7 @@ def get_skipped(session_id):
 
 @app.route("/image/<name>")
 def get_image(name):
-    file = app.db.images.find_one({"_id": name})
+    file = app.db.puzzles.find_one({"_id": name})
     response = make_response(file["file"])
     response.headers.set("Content-Type", "image/png")
     return response
@@ -156,8 +163,14 @@ def get_image(name):
 
 @app.route("/solution/<name>")
 def get_solution(name):
-    solution = app.db.codes.find_one({"_id": name})["file"]
+    solution = app.db.puzzles.find_one({"_id": name})["solution"]
     return solution
+
+
+@app.route("/<session_id>/score")
+def get_score(session_id):
+    session = app.db.sessions.find_one({"_id": session_id})
+    return str(session["score"])
 
 
 @app.route("/<session_id>/submit", methods=["POST"])
@@ -165,17 +178,16 @@ def handle_submit(session_id):
     if not session_id:
         abort(403)
     session = app.db.sessions.find_one({"_id": session_id})
-    attempt_num = session["current_puzzle_attempts"]
+    score = session["score"]
     puzzle_num = session["current_puzzle"]
 
     data = request.get_json()
     html = data["html"]
     attempt_image = render_html(html)
-    attempt_name = f"{session_id}.{puzzle_num}.{attempt_num}"
-    app.db.images.insert_one({"_id": attempt_name, "file": attempt_image})
-    target_file = app.db.images.find_one(
-        {"_id": f"{session_id}.{puzzle_num}"}
-    )["file"]
+    # attempt_name = f"{session_id}.{puzzle_num}.{attempt_num}"
+    # app.db.puzzles.insert_one({"_id": attempt_name, "file": attempt_image})
+    puzzle = app.db.puzzles.find_one({"_id": f"{session_id}.{puzzle_num}"})
+    target_file = puzzle["file"]
 
     grading_res = requests.post(
         "https://3265-146-152-233-45.ngrok-free.app/predict",
@@ -188,22 +200,23 @@ def handle_submit(session_id):
     print(f"{grading_res = }")
     print(f"{grading_res.text = }")
     grading_json = grading_res.json()
-    score = grading_json["similarity_score"]
+    sim_score = grading_json["similarity_score"]
 
-    if score > 0.5:  # correct
+    if sim_score > 0.5:  # correct
+        puzzle_points = puzzle["points"]
         app.db.sessions.update_one(
-            {"_id": session_id}, {"$inc": {"current_puzzle": 1}}
+            {"_id": session_id},
+            {"$inc": {"current_puzzle": 1, "score": puzzle_points}},
         )
 
         thread = Thread(target=generate_puzzle, args=[session_id])
         thread.start()
-
-        return {"status": "ok"}
+        return {"status": "ok", "score": score + puzzle_points}
 
     app.db.sessions.update_one(
         {"_id": session_id}, {"$inc": {"current_puzzle_attempts": 1}}
     )
-    return {"status": "error"}
+    return {"status": "error", "score": score}
 
 
 # @app.route("/generate", methods=["GET"])
@@ -235,8 +248,14 @@ def generate_puzzle(session_id, theme=None, component=None):
     image = render_html(combined_html)
     image_name = f"{session_id}.{puzzle_num}"
 
-    app.db.codes.insert_one({"_id": image_name, "file": combined_html})
-    app.db.images.insert_one({"_id": image_name, "file": image})
+    app.db.puzzles.insert_one(
+        {
+            "_id": image_name,
+            "file": image,
+            "solution": combined_html,
+            "points": len(combined_html) // 20,
+        }
+    )
     app.db.sessions.update_one(
         {"_id": session_id}, {"$inc": {"num_puzzles": 1}}
     )

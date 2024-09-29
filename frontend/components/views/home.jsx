@@ -38,9 +38,16 @@ const Home = () => {
 
   const [sessionId, setSessionId] = useState();
   const [puzzleNum, setPuzzleNum] = useState(0);
+  const [puzzlePoints, setPuzzlePoints] = useState();
+  const [sessionScore, setSessionScore] = useState(0);
   const [attemptNum, setAttemptNum] = useState(0);
 
-  useEffect(() => {handleStart();});
+
+  useEffect(() => {
+    if (!sessionId) {
+      handleStart();
+    }
+  }, [sessionId]);
 
   async function handleStart() {
     if (loading) {
@@ -54,6 +61,20 @@ const Home = () => {
     setSessionId(newSessionId);
     setLoading(false);
   }
+
+  async function updatePuzzlePoints() {
+    const res = await fetch(
+      `${BACKEND}/${sessionId}/target/${puzzleNum}/points`
+    );
+    const t = await res.text();
+    setPuzzlePoints(t);
+  }
+
+  useEffect(() => {
+    if (sessionId) {
+      updatePuzzlePoints();
+    }
+  }, [puzzleNum, sessionId]);
 
   async function handleSubmit() {
     const res = await fetch(`${BACKEND}/${sessionId}/submit`, {
@@ -69,6 +90,7 @@ const Home = () => {
     const resJson = await res.json();
     if (resJson.status === "ok") {
       setPuzzleNum((oldPuzzleNum) => oldPuzzleNum + 1);
+      setSessionScore(resJson.score);
     } else {
       setAttemptNum((oldAttemptNum) => oldAttemptNum + 1);
     }
@@ -98,7 +120,7 @@ const Home = () => {
   }
 
   function handleEnd() {
-    dispatch(toEnd());
+    dispatch(toEnd(sessionId));
   }
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
@@ -146,9 +168,16 @@ const Home = () => {
 
       <div className={styles.editorContainer}>
         <div className={styles.buttonContainer}>
-          <Timer onExpire={handleTimerExpire} length={3 * 60 * 1000} />
+          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+            <Timer onExpire={handleTimerExpire} length={3 * 60 * 1000} />
+            {sessionScore ? <div>{sessionScore} points this run</div> : <></>}
+          </div>
           <div>
-            <b>puzzle {puzzleNum}</b>, attempt {attemptNum}
+            <b>
+              puzzle {puzzleNum}
+              {puzzlePoints ? ` (${puzzlePoints} pts) ` : ""}
+            </b>
+            , attempt {attemptNum}
           </div>
         </div>
         <CodeMirror
