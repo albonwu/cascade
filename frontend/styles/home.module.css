@@ -1,40 +1,51 @@
 .container {
-    display: flex;
-    gap: 1rem;
-    width: 100%;
-    height: 100vh;
-  }
-  
-  .previewContainer {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-  }
-  
-  .editorContainer {
-    display: flex;
-    gap: 1rem;
-    flex-direction: column;
-    flex-grow: 1;
-    height: 100%;
-  }
-  
-  .htmlEditor {
-    flex-shrink: 1;
-  }
-  .cssEditor {
-    flex-grow: 1;
-  }
-  .preview {
-    height: 300px;
-    width: 300px;
-  }
-  
-  .eyedrop-wrapper {
-    margin-bottom: 10px;
-  }
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  height: 100vh;
+  padding: 2rem;
+}
 
-  /* an attempt at making the eyedropper button look nicer
+.previewContainer {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.preview,
+.targetImage {
+  width: 300px;
+  height: 300px;
+}
+
+.editorContainer {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.htmlEditor {
+  flex-shrink: 1;
+}
+.cssEditor {
+  flex-grow: 1;
+}
+.preview {
+  height: 300px;
+  width: 300px;
+}
+
+.eyedrop-wrapper {
+  margin-bottom: 10px;
+}
+
+.eyedropperButton {
+  background: blue;
+}
+
+/* an attempt at making the eyedropper button look nicer
   .custom-eyedropper {
     background-color: #4CAF50;
     color: white;

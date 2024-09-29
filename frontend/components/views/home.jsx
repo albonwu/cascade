@@ -12,6 +12,9 @@ const BACKEND = "http://127.0.0.1:5000";
 
 const Home = () => {
   const [css, setCss] = useState(`
+    body {
+    background: white
+    }
             div {
               height: 100px;
               width: 100px;
@@ -23,7 +26,7 @@ const Home = () => {
   const dispatch = useDispatch();
 
   function generatePreviewHtml() {
-    return `<html><style>body { margin: 0 } ${css}</style>${DOMPurify.sanitize(
+    return `<html><style>body { margin: 0; height: 300px; width: 300px; } ${css}</style>${DOMPurify.sanitize(
       html
     )}</html>`;
   }
@@ -58,14 +61,19 @@ const Home = () => {
   const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press
   const handleChangeColor = ({ rgb, hex }) => {
     setPickedColor({ rgb, hex });
+    navigator.clipboard.writeText(hex);
   };
 
   return (
     <div className={styles.container}>
       <div>
         <div className="eyedrop-wrapper">
-          <EyeDropper once={eyedropOnce} onChange={handleChangeColor}>
-            Eyedropper
+          <EyeDropper
+            onChange={handleChangeColor}
+            cursorActive="crosshair"
+            className={styles.eyedropperButton}
+          >
+            Pick Color
           </EyeDropper>
           <div
             style={{ backgroundColor: pickedColor.rgb }}
@@ -88,7 +96,11 @@ const Home = () => {
           <p>HEX: {pickedColor.hex}</p>
         </div>
         <div className={styles.previewContainer}>
-          <img src={`${BACKEND}/${sessionId}/target`} alt="target" />
+          <img
+            src={`${BACKEND}/${sessionId}/target`}
+            alt="target"
+            className={styles.targetImage}
+          />
           <iframe
             className={styles.preview}
             srcDoc={generatePreviewHtml()}
