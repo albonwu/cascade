@@ -1,9 +1,11 @@
 .container {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Create two equal-width columns */
+  gap: 20px; /* Add spacing between the grid items */
+  padding: 20px; /* Add padding around the grid */
   height: 100vh;
   padding: 2rem;
+  margin-right: 10rem;
 }
 
 .previewContainer {
@@ -27,10 +29,14 @@
 }
 
 .htmlEditor {
+  margin-left: 5rem;
   flex-shrink: 1;
+  width: 40rem;
 }
 .cssEditor {
+  margin-left: 5rem;
   flex-grow: 1;
+  width: 40rem;
 }
 .preview {
   height: 300px;
@@ -90,6 +96,7 @@ button.gameButtonDanger {
 }
 
 .colorContainer {
+  width: 20rem;
   background: #c1b9a7;
   border-radius: 1rem;
   margin-bottom: 1rem;
@@ -107,6 +114,7 @@ button.gameButtonDanger {
 }
 
 .buttonContainer {
+  margin-left: 5rem;
   display: flex;
   width: 100%;
   justify-content: space-between;

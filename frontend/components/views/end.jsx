@@ -1,20 +1,38 @@
 import "../../styles/end.css";
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Image from 'next/image'
 import { toStart } from "../../store/exampleSlice";
 import {useDispatch} from 'react-redux'
 
+const BACKEND = "http://127.0.0.1:5000";
 
 const End = () => {
-  var score = 17; // temp value for now
+  const [sessionId, setSessionId] = useState();
+  var score = fetch `${BACKEND}/${sessionId}/score`
 
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
 
+  // dropdown data
+  const [dataArray, setDataArray] = useState([]);
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${BACKEND}/${sessionId}/submit`);
+        if (!response.ok) {
+        }
+        const data = await response.json(); // Assume the backend sends JSON
+        setDataArray(data); // Step 3: Update state with fetched data
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    };
+    fetchData(); // Call the function to fetch data when the component mounts
+  }, []);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-
 
   function handleReturn() {
     dispatch(toStart())
@@ -44,8 +62,12 @@ const End = () => {
           </span>
           {/* Content that gets toggled */}
           {isOpen && (
-            <div style={{ marginTop: '8px' }}>
-              <p>toggle</p>
+            <div style={{ marginTop: '8px' }} className="dropdown">
+              {dataArray.map((item, index) => (
+                // `${BACKEND}/image/${sessionId}`
+                // `${BACKEND}/solution/${sessionId}`
+                <li key={index}>{`${BACKEND}/image/${sessionId}`}</li>
+              ))}
             </div>
           )}
       </div>
