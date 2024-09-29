@@ -20,19 +20,12 @@ THEMES = [
     "zen",
     "retro",
     "playful",
-    "lunar",
-    "solar",
-    "slanted",
     "grand",
-    "expensive",
-    "cheap",
 ]
 COMPONENTS = [
     "checkbox",
     "circular button",
-    "pill button",
-    "icon with notification badge",
-    "radio select",
+    "button",
     "progress bar",
     "search bar",
     "slider",
@@ -239,7 +232,10 @@ def generate_puzzle(session_id, theme=None, component=None):
     raw_output = data[1]["outputs"]["context"][-1]["parts"][0]["text"]
     raw_output_as_json = raw_output.strip("`json ")
     code_json = json.loads(raw_output_as_json)
-    print(f"{code_json = }")
+    cleaned_html = code_json["html"].replace("\n", "")
+    cleaned_css = code_json["css"].replace("\n", "")
+    print(f"\n\n{cleaned_html = }")
+    print(f"{cleaned_css = }\n\n")
 
     session = app.db.sessions.find_one({"_id": session_id})
     puzzle_num = session["num_puzzles"]
@@ -260,3 +256,17 @@ def generate_puzzle(session_id, theme=None, component=None):
         {"_id": session_id}, {"$inc": {"num_puzzles": 1}}
     )
     return image_name
+
+
+@app.route("/foo")
+def foo():
+    files = [
+        "brown big over.png",
+        "small green blue.png",
+        "apple apple one.png",
+    ]
+    for file in files:
+        handle = open(file, "rb")
+        app.db.puzzles.insert_one(
+            {"_id": file, "file": handle, "solution": "foobar", "points": 20}
+        )

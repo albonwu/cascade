@@ -17,13 +17,13 @@ const Home = () => {
     body {
     background: white
     }
-            div {
-              height: 100px;
-              width: 100px;
-              background: #00274C;
-              color: #FFCB05
+div {
+  height: 100px;
+  width: 100px;
+  background: #00274C;
+  color: #FFCB05
             }`);
-  const [html, _] = useState("<div>hello</div>");
+  const [html, setHtml] = useState("<div>hello</div>");
   const dispatch = useDispatch();
 
   function handleTimerExpire() {
@@ -109,6 +109,10 @@ const Home = () => {
     setCss(val);
   });
 
+  const handleHtmlEditorChange = useCallback((val, viewUpdate) => {
+    setHtml(val);
+  });
+
   async function handleSkip() {
     const res = await fetch(`${BACKEND}/${sessionId}/skip`, {
       method: "POST",
@@ -185,7 +189,7 @@ const Home = () => {
           theme={tokyoNight}
           maxHeight="200px"
           extensions={[loadLanguage("html")]}
-          editable={false}
+          onChange={handleHtmlEditorChange}
         />
         <div className={styles.cssEditor}>
           <CodeMirror
