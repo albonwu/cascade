@@ -6,6 +6,7 @@ import { tokyoNight } from "@uiw/codemirror-theme-tokyo-night";
 import { EyeDropper } from "react-eyedrop";
 import DOMPurify from "dompurify";
 import { useDispatch } from "react-redux";
+import { toEnd } from "../../store/exampleSlice";
 import Timer from "./Timer";
 
 const BACKEND = "http://127.0.0.1:5000";
@@ -23,11 +24,11 @@ const Home = () => {
               color: #FFCB05
             }`);
   const [html, _] = useState("<div>hello</div>");
+  const dispatch = useDispatch();
 
   function handleTimerExpire() {
-    // todo: do this
+    dispatch(toEnd());
   }
-  const dispatch = useDispatch();
 
   function generatePreviewHtml() {
     return `<html><style>body { margin: 0; height: 300px; width: 300px; } ${css}</style>${DOMPurify.sanitize(
@@ -94,7 +95,9 @@ const Home = () => {
     }
   }
 
-  function handleEnd() {}
+  function handleEnd() {
+    dispatch(toEnd());
+  }
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
   const [eyedropOnce] = useState(true); // only 1 use of the eyedropper per button press

@@ -16,13 +16,9 @@ const Start = (page) => {
         <p>train your CSS skills!</p>
       </div>
       <div className="container">
-        <p style={{ width: "600px", marginBottom: "20px" }}>
-          A new way to practice and test your CSS skills while having fun! The
-          objective is to recreate as many of the images as you can in the given
-          time. If you're stuck, you can use the skip button after spending at
-          least 5 seconds on it to move on to the next.
-        </p>
-        <p>Can you rise to the challenge?</p>
+        <p style={{ width: "600px", marginBottom: "20px", marginTop: "30px" }}>
+          Recreate as many images as you can in three minutes. If you get stuck, use the skip button after five seconds.</p>
+        <p style={{ width: "600px", marginBottom: "20px", marginBotom: "30px" }}>All distances are multiples of 10px.</p>
         <button
           style={{ position: "relative", fontWeight: "bold" }}
           className="startButton"
