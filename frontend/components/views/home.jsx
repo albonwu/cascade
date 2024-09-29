@@ -42,7 +42,11 @@ const Home = () => {
   const [sessionScore, setSessionScore] = useState(0);
   const [attemptNum, setAttemptNum] = useState(0);
 
-  useEffect(() => {handleStart();}, []);
+  useEffect(() => {
+    if (!sessionId) {
+      handleStart();
+    }
+  }, [sessionId]);
 
   async function handleStart() {
     if (loading) {
@@ -115,7 +119,7 @@ const Home = () => {
   }
 
   function handleEnd() {
-    dispatch(toEnd());
+    dispatch(toEnd(sessionId));
   }
 
   const [pickedColor, setPickedColor] = useState({ rgb: "", hex: "" });
