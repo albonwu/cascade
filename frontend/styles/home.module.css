@@ -59,8 +59,18 @@
   display: inline-block;
   font-size: 16px;
   margin: 4px 2px;
-  border-radius: 12px;
-  box-shadow: 2px 2px 2px black;
+  border-radius: 0.5rem;
+  /* box-shadow: 2px 2px 2px black; */
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+button.gameButtonPrimary {
+  color: white;
+  background: #60cae3;
+}
+button.gameButtonDanger {
+  color: white;
+  background: #e46962;
 }
 .gameButton:active {
   top: 2px;
@@ -83,4 +93,10 @@
   /* border-radius: 100%; */
   width: 2.5rem;
   height: 2.5rem;
+}
+
+.buttonContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }

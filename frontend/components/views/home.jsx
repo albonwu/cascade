@@ -119,13 +119,7 @@ const Home = () => {
       </div>
 
       <div className={styles.editorContainer}>
-        <div
-          style={{
-            display: "flex",
-            marginRight: "20px",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className={styles.buttonContainer}>
           <button
             className={styles.gameButton}
             style={{ width: "100px", backgroundColor: "#FDFAE0" }}
@@ -137,8 +131,7 @@ const Home = () => {
             {isDisabled ? "Wait..." : "Skip"}
           </button>
           <button
-            className={styles.gameButton}
-            style={{ width: "125px", backgroundColor: "#FDFAE0" }}
+            className={`${styles.gameButton} ${styles.gameButtonDanger}`}
             onClick={() => {
               handleEnd;
             }}
@@ -162,15 +155,13 @@ const Home = () => {
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
           />
-          <button onClick={handleStart}>Start</button>
+        </div>
+        <div className={styles.buttonContainer}>
+          <button onClick={handleStart} className={styles.gameButton}>
+            Start
+          </button>
           <button
-            style={{
-              marginTop: "20px",
-              height: "2rem",
-              width: "100px",
-              backgroundColor: "#58C9E2",
-            }}
-            className={styles.gameButton}
+            className={`${styles.gameButton} ${styles.gameButtonPrimary}`}
             onClick={handleSubmit}
           >
             Submit
