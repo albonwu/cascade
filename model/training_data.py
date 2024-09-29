@@ -1,3 +1,5 @@
+"""For large-scale dataset generation, use generate_data.py."""
+
 import os 
 from dotenv import load_dotenv
 from selenium import webdriver
