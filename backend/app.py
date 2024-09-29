@@ -51,10 +51,14 @@ def start_session():
     session_id = uuid4()
     app.db.sessions.insert_one(
         {
-            "id": session_id,
+            "_id": str(session_id),
+            "num_puzzles": 0,
+            "current_puzzle_attempts": 0,
         }
     )
-    return session_id
+    res = make_response(str(session_id))
+    res.set_cookie("session_id", str(session_id))
+    return res
 
 
 @app.route("/serve")
@@ -68,13 +72,13 @@ def serve():
 
 @app.route("/submit", methods=["POST"])
 def handle_submit():
-    # attempt_uuid = uuid4()
-    # session = request.cookies.get("session")
+    session_id = request.cookies.get("session_id")
+    attempt_num = app.db.images.find_one({"_id": session_id})[
+        "current_puzzle_attempts"
+    ]
     data = request.get_json()
-    puzzle_id = data["puzzle_id"]
     html = data["html"]
-    app.db.sessions.insert_one({"puzzle_id": puzzle_id, "html": html})
-    test = imgkit.from_string(
+    attempt_image = imgkit.from_string(
         html,
         False,
         options={
@@ -84,12 +88,14 @@ def handle_submit():
             "--width": "400",
         },
     )
-    app.db.images.insert_one({"id": str(puzzle_id), "file": test})
-    response = make_response(test)
-    response.headers.set("Content-Type", "image/png")
-    # response.headers.set("Content-Disposition", filename="pleasee.png")
-    return response
-    # return "submitted!"
+    attempt_name = f"{session_id}.{attempt_num}"
+    app.db.images.insert_one({"_id": attempt_name, "file": attempt_image})
+    app.db.sessions.update_one(
+        {"_id": session_id}, {"$inc": {"current_puzzle_attempts": 1}}
+    )
+    # todo: compare image to correct
+
+    return "submitted!"
 
 
 @app.route("/generate", methods=["GET"])
@@ -125,9 +131,3 @@ def generate_component():
     app.db.images.insert_one({"id": str(puzzle_id), "file": image})
 
     return str(puzzle_id)
-
-
-# not necessarily needed
-@app.route("/images/<path:path>")
-def serve_image(path):
-    return send_from_directory("images", path)
