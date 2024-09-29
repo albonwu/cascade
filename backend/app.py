@@ -11,11 +11,14 @@ from flask_cors import CORS, cross_origin
 load_dotenv()
 app = Flask(__name__)
 cors = CORS(app)
-app.config["CORS_HEADERS"] = "Content-Type"
+
+
+@app.route("/", methods=["GET"])
+def index():
+    return "this is the cascade backend lesgooooooooo"
 
 
 @app.route("/submit", methods=["POST"])
-@cross_origin()
 def handle_submit():
     # attempt_uuid = uuid4()
     # session = request.cookies.get("session")
@@ -25,7 +28,7 @@ def handle_submit():
     html = data["html"]
     test = imgkit.from_string(
         html,
-        f"{puzzle_id}.{time.time()}.png",
+        f"static/{puzzle_id}.{time.time()}.png",
         options={
             "crop-h": "400",
             "crop-w": "400",
@@ -33,7 +36,7 @@ def handle_submit():
             "--width": "400",
         },
     )
-    return test
+    return "submitted!"
 
 
 BREADBOARD_URL = "https://breadboard-community.wl.r.appspot.com/boards/@ArtisticJellyfish/cascade-generator.bgl.api/run"
@@ -69,7 +72,7 @@ def generate_component():
         },
     )
 
-    return puzzle_id
+    return str(puzzle_id)
 
 
 # not necessarily needed

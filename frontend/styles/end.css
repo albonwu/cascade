@@ -1,0 +1,33 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 10rem;
+  }
+.returnButton {
+    background-color: #FDFAE0;
+    border: none;
+    color: black;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    width: 300px;
+    border-radius: 12px;
+    box-shadow: 5px 5px 5px black;
+  }
+  .returnButton:active {
+    top: 2px;
+    left: 1px;
+    box-shadow: none;
+  }
+
+h1 {
+    font-weight: bold;
+    font-size: 50px;
+    margin-bottom: 20px;
+  }
