@@ -15,7 +15,7 @@ cors = CORS(app)
 
 @app.route("/", methods=["GET"])
 def index():
-    return "this is the cascade backend lesgoooo"
+    return "this is the cascade backend lesgooooo"
 
 
 @app.route("/submit", methods=["POST"])
