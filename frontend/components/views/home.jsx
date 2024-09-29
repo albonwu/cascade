@@ -27,7 +27,7 @@ const Home = () => {
   const dispatch = useDispatch();
 
   function handleTimerExpire() {
-    useDispatch(toEnd());
+    dispatch(toEnd());
   }
 
   function generatePreviewHtml() {
@@ -38,6 +38,7 @@ const Home = () => {
 
   const [sessionId, setSessionId] = useState();
   const [puzzleNum, setPuzzleNum] = useState(0);
+  const [attemptNum, setAttemptNum] = useState(0);
 
   useEffect(() => {handleStart();}, []);
 
@@ -69,7 +70,7 @@ const Home = () => {
     if (resJson.status === "ok") {
       setPuzzleNum((oldPuzzleNum) => oldPuzzleNum + 1);
     } else {
-      // do nothing?
+      setAttemptNum((oldAttemptNum) => oldAttemptNum + 1);
     }
   }
 
@@ -87,11 +88,14 @@ const Home = () => {
     setCss(val);
   });
 
-  const handleSkip = () => {
-    // tried to make the 5s cooldown reset....
-    // setIsDisabled(true);
-    // setTimerKey((prev) => prev + 1);
-  };
+  async function handleSkip() {
+    const res = await fetch(`${BACKEND}/${sessionId}/skip`, {
+      method: "POST",
+    });
+    if (res.ok) {
+      setPuzzleNum((oldPuzzleNum) => oldPuzzleNum + 1);
+    }
+  }
 
   function handleEnd() {
     dispatch(toEnd());
@@ -143,6 +147,9 @@ const Home = () => {
       <div className={styles.editorContainer}>
         <div className={styles.buttonContainer}>
           <Timer onExpire={handleTimerExpire} length={3 * 60 * 1000} />
+          <div>
+            <b>puzzle {puzzleNum}</b>, attempt {attemptNum}
+          </div>
         </div>
         <CodeMirror
           className={styles.htmlEditor}
@@ -179,9 +186,7 @@ const Home = () => {
             <button
               className={styles.gameButton}
               disabled={isDisabled}
-              onClick={() => {
-                handleSkip;
-              }}
+              onClick={handleSkip}
             >
               {isDisabled ? "Wait..." : "Skip"}
             </button>
