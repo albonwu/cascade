@@ -15,7 +15,6 @@ const End = () => {
     setIsOpen(!isOpen);
   };
 
-
   function handleReturn() {
     dispatch(toStart())
   }

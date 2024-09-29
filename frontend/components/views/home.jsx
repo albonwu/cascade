@@ -24,11 +24,11 @@ const Home = () => {
               color: #FFCB05
             }`);
   const [html, _] = useState("<div>hello</div>");
+  const dispatch = useDispatch();
 
   function handleTimerExpire() {
-    // todo: do this
+    useDispatch(toEnd());
   }
-  const dispatch = useDispatch();
 
   function generatePreviewHtml() {
     return `<html><style>body { margin: 0; height: 300px; width: 300px; } ${css}</style>${DOMPurify.sanitize(
@@ -38,6 +38,8 @@ const Home = () => {
 
   const [sessionId, setSessionId] = useState();
   const [puzzleNum, setPuzzleNum] = useState(0);
+
+  useEffect(() => {handleStart();}, []);
 
   async function handleStart() {
     if (loading) {
@@ -104,7 +106,7 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <div>
+      <div style={{ marginLeft: "auto" }}>
         <div className={styles.colorContainer}>
           <EyeDropper
             onChange={handleChangeColor}
@@ -153,7 +155,7 @@ const Home = () => {
         <div className={styles.cssEditor}>
           <CodeMirror
             value={css}
-            height="100%"
+            height="30rem"
             theme={tokyoNight}
             extensions={[loadLanguage("css")]}
             onChange={handleCssEditorChange}
