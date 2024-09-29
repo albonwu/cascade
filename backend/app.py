@@ -2,7 +2,7 @@ import os
 import time
 import json
 from uuid import uuid4
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 import imgkit
 import requests
 from dotenv import load_dotenv
@@ -23,7 +23,7 @@ def handle_submit():
     print(f"{data = }")
     puzzle_id = data["puzzle_id"]
     html = data["html"]
-    imgkit.from_string(
+    test = imgkit.from_string(
         html,
         f"{puzzle_id}.{time.time()}.png",
         options={
@@ -33,7 +33,7 @@ def handle_submit():
             "--width": "400",
         },
     )
-    return "<p>Hello world!</p>"
+    return test
 
 
 BREADBOARD_URL = "https://breadboard-community.wl.r.appspot.com/boards/@ArtisticJellyfish/cascade-generator.bgl.api/run"
@@ -41,28 +41,26 @@ BREADBOARD_URL = "https://breadboard-community.wl.r.appspot.com/boards/@Artistic
 
 @app.route("/generate", methods=["GET"])
 def generate_component():
+    theme = request.args.get("theme")
+    component = request.args.get("component")
     res = requests.post(
         BREADBOARD_URL,
         json={
             "$key": os.getenv("BREADBOARD-KEY"),
-            "context": "Theme: Playful, Component: <button>",
+            "context": f"Theme: {theme}, Component: {component}",
         },
     )
-    # print(f"{res.text = }")
+
     json_res = res.text[5:]
     data = json.loads(json_res)
-
-    print(data)
-
     raw_output = data[1]["outputs"]["context"][-1]["parts"][0]["text"]
-
     raw_output_as_json = raw_output.strip("`json ")
-
     code_json = json.loads(raw_output_as_json)
 
+    puzzle_id = uuid4()
     imgkit.from_string(
         f"<style>{code_json['css']}</style>{code_json['html']}",
-        "output.png",
+        f"static/{puzzle_id}.png",
         options={
             "crop-h": "400",
             "crop-w": "400",
@@ -71,4 +69,10 @@ def generate_component():
         },
     )
 
-    return code_json["css"]
+    return puzzle_id
+
+
+# not necessarily needed
+@app.route("/images/<path:path>")
+def serve_image(path):
+    return send_from_directory("images", path)
