@@ -42,6 +42,7 @@ div {
   const [sessionScore, setSessionScore] = useState(0);
   const [attemptNum, setAttemptNum] = useState(0);
 
+
   useEffect(() => {
     if (!sessionId) {
       handleStart();
@@ -114,6 +115,12 @@ div {
   });
 
   async function handleSkip() {
+    setIsDisabled(true); // Disable the button again after click
+
+    // Set a timeout to re-enable it after 5 seconds
+    setTimeout(() => {
+      setIsDisabled(false);
+    }, 5000);
     const res = await fetch(`${BACKEND}/${sessionId}/skip`, {
       method: "POST",
     });
@@ -201,13 +208,13 @@ div {
           />
         </div>
         <div className={styles.buttonContainer}>
-          <button
+          {/* <button
             onClick={handleStart}
             className={styles.gameButton}
             disabled={loading}
           >
             Start
-          </button>
+          </button> */}
           <div className={styles.buttonGroup}>
             <button
               className={`${styles.gameButton} ${styles.gameButtonDanger}`}
