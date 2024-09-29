@@ -7,10 +7,36 @@ import imgkit
 import requests
 from dotenv import load_dotenv
 from flask_cors import CORS, cross_origin
+from pymongo import MongoClient
 
 load_dotenv()
+
+
+# access your database and collection from Atlas
+# database = mongo_client.get_database(“anaiyamovies”)
+# collection = database.get_collection(“movies”)
+
 app = Flask(__name__)
 cors = CORS(app)
+
+
+def init_mongo_client(app: Flask):
+    try:
+        mongo_client = MongoClient(os.getenv("MONGO-CONNECTION-STRING"))
+
+        result = mongo_client.admin.command("ping")
+
+        if int(result.get("ok")) == 1:
+            print("Connected")
+        else:
+            raise Exception("Cluster ping returned OK != 1")
+        app.mongo_client = mongo_client
+        app.db = mongo_client.bigdata
+    except Exception as e:
+        print(e)
+
+
+init_mongo_client(app)
 
 
 @app.route("/", methods=["GET"])
@@ -23,9 +49,9 @@ def handle_submit():
     # attempt_uuid = uuid4()
     # session = request.cookies.get("session")
     data = request.get_json()
-    print(f"{data = }")
     puzzle_id = data["puzzle_id"]
     html = data["html"]
+    app.db.sessions.insert_one({"puzzle_id": puzzle_id, "html": html})
     test = imgkit.from_string(
         html,
         f"static/{puzzle_id}.{time.time()}.png",
