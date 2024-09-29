@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  .previewContainer {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+  }
+  
+  .editorContainer {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+  }
+  
+  .htmlEditor {
+    flex-shrink: 1;
+  }
+  .cssEditor {
+    flex-grow: 1;
+  }
+  .preview {
+    height: 300px;
+    width: 300px;
+  }
+  
+  .eyedrop-wrapper {
+    margin-bottom: 10px;
+  }
+
+  /* an attempt at making the eyedropper button look nicer
+  .custom-eyedropper {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  } */
