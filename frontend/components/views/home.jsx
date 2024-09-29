@@ -119,26 +119,7 @@ const Home = () => {
       </div>
 
       <div className={styles.editorContainer}>
-        <div className={styles.buttonContainer}>
-          <button
-            className={styles.gameButton}
-            style={{ width: "100px", backgroundColor: "#FDFAE0" }}
-            disabled={isDisabled}
-            onClick={() => {
-              handleSkip;
-            }}
-          >
-            {isDisabled ? "Wait..." : "Skip"}
-          </button>
-          <button
-            className={`${styles.gameButton} ${styles.gameButtonDanger}`}
-            onClick={() => {
-              handleEnd;
-            }}
-          >
-            {"End game"}
-          </button>
-        </div>
+        <div className={styles.buttonContainer}>lorem ipsum</div>
         <CodeMirror
           className={styles.htmlEditor}
           value={html}
@@ -157,9 +138,28 @@ const Home = () => {
           />
         </div>
         <div className={styles.buttonContainer}>
-          <button onClick={handleStart} className={styles.gameButton}>
+          {/* <button onClick={handleStart} className={styles.gameButton}>
             Start
-          </button>
+          </button> */}
+          <div className={styles.buttonGroup}>
+            <button
+              className={`${styles.gameButton} ${styles.gameButtonDanger}`}
+              onClick={() => {
+                handleEnd;
+              }}
+            >
+              {"End game"}
+            </button>
+            <button
+              className={styles.gameButton}
+              disabled={isDisabled}
+              onClick={() => {
+                handleSkip;
+              }}
+            >
+              {isDisabled ? "Wait..." : "Skip"}
+            </button>
+          </div>
           <button
             className={`${styles.gameButton} ${styles.gameButtonPrimary}`}
             onClick={handleSubmit}
