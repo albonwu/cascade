@@ -111,6 +111,12 @@ const Home = () => {
   });
 
   async function handleSkip() {
+    setIsDisabled(true); // Disable the button again after click
+
+    // Set a timeout to re-enable it after 5 seconds
+    setTimeout(() => {
+      setIsDisabled(false);
+    }, 5000);
     const res = await fetch(`${BACKEND}/${sessionId}/skip`, {
       method: "POST",
     });
