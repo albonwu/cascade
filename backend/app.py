@@ -2,11 +2,12 @@ import os
 import time
 import json
 from uuid import uuid4
-from flask import Flask, request, send_from_directory
+from flask import Flask, make_response, request, send_from_directory
 import imgkit
 import requests
 from dotenv import load_dotenv
 from flask_cors import CORS, cross_origin
+from bson.binary import Binary
 from pymongo import MongoClient
 
 load_dotenv()
@@ -18,6 +19,7 @@ load_dotenv()
 
 app = Flask(__name__)
 cors = CORS(app)
+BREADBOARD_URL = "https://breadboard-community.wl.r.appspot.com/boards/@ArtisticJellyfish/cascade-generator.bgl.api/run"
 
 
 def init_mongo_client(app: Flask):
@@ -44,6 +46,26 @@ def index():
     return "this is the cascade backend lesgooooooooo"
 
 
+@app.route("/start_session", methods=["POST"])
+def start_session():
+    session_id = uuid4()
+    app.db.sessions.insert_one(
+        {
+            "id": session_id,
+        }
+    )
+    return session_id
+
+
+@app.route("/serve")
+def serve():
+    file = app.db.images.find_one({"id": "test"})
+    print(f'{file["file"] = }')
+    response = make_response(file["file"])
+    response.headers.set("Content-Type", "image/png")
+    return response
+
+
 @app.route("/submit", methods=["POST"])
 def handle_submit():
     # attempt_uuid = uuid4()
@@ -54,7 +76,7 @@ def handle_submit():
     app.db.sessions.insert_one({"puzzle_id": puzzle_id, "html": html})
     test = imgkit.from_string(
         html,
-        f"static/{puzzle_id}.{time.time()}.png",
+        False,
         options={
             "crop-h": "400",
             "crop-w": "400",
@@ -62,10 +84,12 @@ def handle_submit():
             "--width": "400",
         },
     )
-    return "submitted!"
-
-
-BREADBOARD_URL = "https://breadboard-community.wl.r.appspot.com/boards/@ArtisticJellyfish/cascade-generator.bgl.api/run"
+    app.db.images.insert_one({"id": str(puzzle_id), "file": test})
+    response = make_response(test)
+    response.headers.set("Content-Type", "image/png")
+    # response.headers.set("Content-Disposition", filename="pleasee.png")
+    return response
+    # return "submitted!"
 
 
 @app.route("/generate", methods=["GET"])
@@ -87,9 +111,9 @@ def generate_component():
     code_json = json.loads(raw_output_as_json)
 
     puzzle_id = uuid4()
-    imgkit.from_string(
+    image = imgkit.from_string(
         f"<style>{code_json['css']}</style>{code_json['html']}",
-        f"static/{puzzle_id}.png",
+        False,
         options={
             "crop-h": "400",
             "crop-w": "400",
@@ -97,6 +121,8 @@ def generate_component():
             "--width": "400",
         },
     )
+
+    app.db.images.insert_one({"id": str(puzzle_id), "file": image})
 
     return str(puzzle_id)
 
