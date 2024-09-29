@@ -24,11 +24,11 @@ const Home = () => {
               color: #FFCB05
             }`);
   const [html, _] = useState("<div>hello</div>");
+  const dispatch = useDispatch();
 
   function handleTimerExpire() {
-    // todo: do this
+    dispatch(toEnd());
   }
-  const dispatch = useDispatch();
 
   function generatePreviewHtml() {
     return `<html><style>body { margin: 0; height: 300px; width: 300px; } ${css}</style>${DOMPurify.sanitize(
